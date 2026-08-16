@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aadam Ahmed — Data Analyst</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0F1A2B;
+    --ink-2:#182642;
+    --paper:#EDE7D8;
+    --paper-dim:#B9B4A4;
+    --brass:#C08A3E;
+    --teal:#4FA89E;
+    --line: rgba(237,231,216,0.14);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--ink);
+    color:var(--paper);
+    font-family:'Inter', sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    background-image:
+      radial-gradient(circle at 15% 8%, rgba(192,138,62,0.07), transparent 40%),
+      radial-gradient(circle at 85% 92%, rgba(79,168,158,0.08), transparent 45%);
+  }
+  .mono{font-family:'IBM Plex Mono', monospace;}
+  a{color:inherit;}
+
+  /* topographic contour lines, faint, behind everything */
+  .contours{
+    position:fixed; inset:0; z-index:0; opacity:0.5; pointer-events:none;
+    background-image:
+      repeating-radial-gradient(circle at 12% 20%, transparent 0 40px, var(--line) 41px, transparent 42px 90px),
+      repeating-radial-gradient(circle at 90% 75%, transparent 0 55px, var(--line) 56px, transparent 57px 110px);
+  }
+
+  .wrap{max-width:1040px; margin:0 auto; padding:0 28px; position:relative; z-index:1;}
+
+  /* ===== NAV ===== */
+  nav{
+    position:sticky; top:0; z-index:10;
+    background:rgba(15,26,43,0.88);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--line);
+  }
+  nav .wrap{display:flex; justify-content:space-between; align-items:center; height:56px;}
+  .nav-mark{font-family:'Fraunces', serif; font-weight:600; font-size:1.05rem; letter-spacing:0.02em;}
+  .nav-links{display:flex; gap:22px; font-size:0.78rem;}
+  .nav-links a{text-transform:uppercase; letter-spacing:0.08em; color:var(--paper-dim); text-decoration:none; transition:color .2s;}
+  .nav-links a:hover{color:var(--brass);}
+  @media (max-width:560px){ .nav-links{gap:14px;} .nav-links a{font-size:0.68rem;} }
+
+  /* ===== HERO ===== */
+  header.hero{padding:88px 0 64px; border-bottom:1px solid var(--line);}
+  .coord{
+    font-size:0.78rem; letter-spacing:0.1em; color:var(--teal); text-transform:uppercase;
+    display:flex; align-items:center; gap:10px; margin-bottom:22px;
+  }
+  .coord::before{content:''; width:26px; height:1px; background:var(--teal); display:inline-block;}
+  h1.title{
+    font-family:'Fraunces', serif;
+    font-weight:500;
+    font-size:clamp(2.6rem, 6vw, 4.4rem);
+    line-height:1.02;
+    letter-spacing:-0.01em;
+    max-width:760px;
+  }
+  h1.title em{font-style:italic; font-weight:300; color:var(--brass);}
+  .hero-sub{
+    margin-top:22px; max-width:540px; color:var(--paper-dim); font-size:1.02rem; line-height:1.65;
+  }
+  .hero-actions{display:flex; gap:14px; margin-top:34px; flex-wrap:wrap;}
+  .btn{
+    font-family:'IBM Plex Mono', monospace; font-size:0.8rem; letter-spacing:0.03em;
+    padding:11px 20px; border-radius:2px; text-decoration:none; display:inline-block;
+    transition:transform .15s ease, background .15s ease;
+  }
+  .btn-primary{background:var(--brass); color:var(--ink); font-weight:500;}
+  .btn-primary:hover{transform:translateY(-1px); background:#d29a4c;}
+  .btn-ghost{border:1px solid var(--line); color:var(--paper);}
+  .btn-ghost:hover{border-color:var(--teal); color:var(--teal);}
+
+  /* ===== SECTION LABEL ===== */
+  .section{padding:64px 0; border-bottom:1px solid var(--line);}
+  .section-label{
+    font-family:'IBM Plex Mono', monospace; font-size:0.75rem; letter-spacing:0.12em;
+    color:var(--brass); text-transform:uppercase; margin-bottom:8px;
+  }
+  .section-title{
+    font-family:'Fraunces', serif; font-weight:500; font-size:1.9rem; margin-bottom:36px;
+  }
+
+  /* ===== ABOUT ===== */
+  .about-grid{display:grid; grid-template-columns:1.3fr 1fr; gap:48px;}
+  .about-grid p{color:var(--paper-dim); margin-bottom:14px; max-width:52ch;}
+  .credentials{border-left:1px solid var(--line); padding-left:24px;}
+  .cred-item{margin-bottom:16px;}
+  .cred-item .k{font-family:'IBM Plex Mono', monospace; font-size:0.7rem; color:var(--teal); text-transform:uppercase; letter-spacing:0.08em; display:block; margin-bottom:3px;}
+  .cred-item .v{font-size:0.92rem;}
+  @media (max-width:720px){ .about-grid{grid-template-columns:1fr;} .credentials{border-left:none; border-top:1px solid var(--line); padding-left:0; padding-top:24px;} }
+
+  /* ===== PROJECTS — specimen cards with sheet references ===== */
+  .project-list{display:flex; flex-direction:column; gap:2px;}
+  .project{
+    background:var(--ink-2);
+    border:1px solid transparent;
+    padding:28px;
+    display:grid; grid-template-columns:100px 1fr; gap:24px;
+    transition:border-color .2s ease, background .2s ease;
+  }
+  .project:hover{border-color:var(--brass);}
+  .sheet-ref{
+    font-family:'IBM Plex Mono', monospace; font-size:0.72rem; color:var(--paper-dim);
+    line-height:1.7; align-self:start;
+  }
+  .sheet-ref .num{display:block; font-size:1.5rem; color:var(--brass); line-height:1;}
+  .project h3{font-family:'Fraunces', serif; font-weight:500; font-size:1.25rem; margin-bottom:8px;}
+  .project p{color:var(--paper-dim); font-size:0.92rem; max-width:60ch; margin-bottom:14px;}
+  .tagset{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px;}
+  .tag{
+    font-family:'IBM Plex Mono', monospace; font-size:0.68rem; letter-spacing:0.03em;
+    padding:4px 9px; border:1px solid var(--line); color:var(--teal); text-transform:uppercase;
+  }
+  .project-link{font-size:0.8rem; font-family:'IBM Plex Mono', monospace; color:var(--brass); text-decoration:none; border-bottom:1px solid rgba(192,138,62,0.4);}
+  .project-link:hover{border-color:var(--brass);}
+  @media (max-width:600px){ .project{grid-template-columns:1fr; gap:12px;} .sheet-ref{display:flex; align-items:center; gap:10px;} .sheet-ref .num{font-size:1.1rem;} }
+
+  /* ===== INSTRUMENTS / SKILLS ===== */
+  .instruments{display:grid; grid-template-columns:repeat(auto-fill, minmax(150px,1fr)); gap:1px; background:var(--line); border:1px solid var(--line);}
+  .instrument{background:var(--ink); padding:20px 18px;}
+  .instrument .k{font-family:'IBM Plex Mono', monospace; font-size:0.68rem; color:var(--teal); text-transform:uppercase; letter-spacing:0.06em; display:block; margin-bottom:6px;}
+  .instrument .v{font-size:0.95rem;}
+
+  /* ===== FOOTER ===== */
+  footer{padding:56px 0 80px;}
+  .footer-grid{display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:24px;}
+  footer .coord{margin-bottom:14px;}
+  footer h2{font-family:'Fraunces', serif; font-weight:500; font-size:1.9rem; max-width:420px; margin-bottom:10px;}
+  footer p{color:var(--paper-dim); max-width:40ch; font-size:0.92rem;}
+  .footer-links{display:flex; flex-direction:column; gap:10px; text-align:right;}
+  .footer-links a{font-family:'IBM Plex Mono', monospace; font-size:0.85rem; text-decoration:none; color:var(--paper); border-bottom:1px solid var(--line); padding-bottom:2px;}
+  .footer-links a:hover{color:var(--brass); border-color:var(--brass);}
+  .fine-print{margin-top:48px; padding-top:20px; border-top:1px solid var(--line); font-family:'IBM Plex Mono', monospace; font-size:0.7rem; color:var(--paper-dim); display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;}
+  @media (max-width:600px){ .footer-links{text-align:left;} .footer-grid{flex-direction:column; align-items:flex-start;} }
+
+  ::selection{background:var(--brass); color:var(--ink);}
+  a:focus-visible, .btn:focus-visible{outline:2px solid var(--teal); outline-offset:2px;}
+  @media (prefers-reduced-motion: reduce){ *{transition:none !important; scroll-behavior:auto !important;} }
+</style>
+</head>
+<body>
+
+<div class="contours"></div>
+
+<nav>
+  <div class="wrap">
+    <div class="nav-mark">Aadam Ahmed</div>
+    <div class="nav-links">
+      <a href="#work">Work</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <h1 class="title">Turning raw data into <em>readable</em> ground truth.</h1>
+    <p class="hero-sub">Data analyst with a B.S. in Data Analytics from WGU. I build ETL pipelines, train and deploy models, and design dashboards that hold up under questions — three field reports below, from GDP trends to a production ML API.</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="#work">View the work</a>
+      <a class="btn btn-ghost" href="#contact">Get in touch</a>
+    </div>
+  </div>
+</header>
+
+<section class="section" id="about">
+  <div class="wrap">
+    <div class="section-label">Field notes</div>
+    <h2 class="section-title">About</h2>
+    <div class="about-grid">
+      <div>
+        <p>I'm a data analyst based in Portland, currently at Pulse Electronics on the data processing side, with prior work in healthcare data and operations. I hold a B.S. in Data Analytics from Western Governors University, where I ran projects end to end — from raw datasets and hypothesis tests through to deployed models and public dashboards.</p>
+        <p>I care about the boring parts that make analysis trustworthy: clean pipelines, documented methodology, and results that are honest about their limits. Currently looking for data analyst and data entry-adjacent roles, including remote and contract work.</p>
+      </div>
+      <div class="credentials">
+        <div class="cred-item">
+          <span class="k">Education</span>
+          <span class="v">B.S. Data Analytics — Western Governors University</span>
+        </div>
+        <div class="cred-item">
+          <span class="k">Certifications</span>
+          <span class="v">CompTIA Data+ · CompTIA Project+ · AWS Certified Cloud Practitioner</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="work">
+  <div class="wrap">
+    <div class="section-label">Selected work</div>
+    <h2 class="section-title">Three field reports</h2>
+    <div class="project-list">
+
+      <div class="project">
+        <div class="sheet-ref"><span class="num">01</span>SHEET<br>ML / TRAIN</div>
+        <div>
+          <h3>ML Pipeline: Model Build</h3>
+          <p>The training half of an end-to-end machine learning pipeline — data validation, preprocessing, and a Random Forest model built and evaluated as a standalone, testable workflow.</p>
+          <div class="tagset"><span class="tag">Python</span><span class="tag">Random Forest</span><span class="tag">Scikit-learn</span></div>
+          <a class="project-link" href="https://github.com/aadamahmed71-lgtm/Project-Build-an-ML-Pipeline-Starter" target="_blank" rel="noopener">View on GitHub →</a>
+        </div>
+      </div>
+
+      <div class="project">
+        <div class="sheet-ref"><span class="num">02</span>SHEET<br>ML / DEPLOY</div>
+        <div>
+          <h3>ML Pipeline: FastAPI Deployment</h3>
+          <p>The deployment half of the same pipeline: the trained model served through a FastAPI endpoint, with automated testing and CI via GitHub Actions. Built to demonstrate the full path from model to live endpoint.</p>
+          <div class="tagset"><span class="tag">FastAPI</span><span class="tag">GitHub Actions</span><span class="tag">CI/CD</span></div>
+          <a class="project-link" href="https://github.com/aadamahmed71-lgtm/Deploying-a-Scalable-ML-Pipeline-with-FastAPI" target="_blank" rel="noopener">View on GitHub →</a>
+        </div>
+      </div>
+
+      <div class="project">
+        <div class="sheet-ref"><span class="num">03</span>SHEET<br>DASHBOARD</div>
+        <div>
+          <h3>U.S. Census County Dashboard</h3>
+          <p>An interactive Tableau Public dashboard exploring U.S. Census data at the county level — built to make geographic and demographic patterns explorable at a glance, not just reportable.</p>
+          <div class="tagset"><span class="tag">Tableau</span><span class="tag">Census Data</span><span class="tag">Visualization</span></div>
+          <a class="project-link" href="https://public.tableau.com/app/profile/aadam.ahmed3340" target="_blank" rel="noopener">View on Tableau Public →</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-label">Instruments</div>
+    <h2 class="section-title">Tools &amp; skills</h2>
+    <div class="instruments">
+      <div class="instrument"><span class="k">Query</span><span class="v">SQL / PostgreSQL</span></div>
+      <div class="instrument"><span class="k">Analysis</span><span class="v">Python</span></div>
+      <div class="instrument"><span class="k">Visualization</span><span class="v">Tableau</span></div>
+      <div class="instrument"><span class="k">Reporting</span><span class="v">Excel</span></div>
+      <div class="instrument"><span class="k">Cloud</span><span class="v">AWS</span></div>
+      <div class="instrument"><span class="k">ML Ops</span><span class="v">MLflow, FastAPI</span></div>
+      <div class="instrument"><span class="k">Version Control</span><span class="v">Git / GitHub</span></div>
+      <div class="instrument"><span class="k">Methodology</span><span class="v">CRISP-DM</span></div>
+    </div>
+  </div>
+</section>
+
+<footer id="contact">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <div class="coord">Coordinates for contact</div>
+        <h2>Let's talk data.</h2>
+        <p>Open to data analyst, data entry, and remote/contract roles — reach out any time.</p>
+      </div>
+      <div class="footer-links">
+        <a href="mailto:aadamahmed71@gmail.com">aadamahmed71@gmail.com →</a>
+        <a href="https://github.com/aadamahmed71-lgtm" target="_blank" rel="noopener">github.com/aadamahmed71-lgtm →</a>
+        <a href="https://public.tableau.com/app/profile/aadam.ahmed3340" target="_blank" rel="noopener">Tableau Public →</a>
+        <a href="https://www.linkedin.com/in/aadam-ahmed-a3a9aa326/" target="_blank" rel="noopener">linkedin.com/in/aadam-ahmed →</a>
+      </div>
+    </div>
+    <div class="fine-print">
+      <span>Aadam Ahmed — Data Analytics, WGU</span>
+      <span>Portland, Oregon</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
